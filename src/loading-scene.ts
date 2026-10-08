@@ -430,26 +430,28 @@ export class LoadingScene extends SceneBase {
       .text({
         x: midWidth,
         y: assetText.y + 152,
-        text: i18next.t("menu:disclaimer"),
+        text: "", // Text removed to create modern app feel
         style: {
           font: "72px emerald",
           color: "#DA3838",
         },
       })
-      .setOrigin(0.5, 0.5);
+      .setOrigin(0.5, 0.5)
+      .setVisible(false); // Hidden
 
     const disclaimerDescriptionText = this.make
       .text({
         x: midWidth,
         y: disclaimerText.y + 120,
-        text: i18next.t("menu:disclaimerDescription"),
+        text: "", // Text removed
         style: {
           font: "48px emerald",
           color: "#ffffff",
           align: "center",
         },
       })
-      .setOrigin(0.5, 0.5);
+      .setOrigin(0.5, 0.5)
+      .setVisible(false); // Hidden
 
     const loadingGraphics: (GameObjects.Image | GameObjects.Graphics | GameObjects.Text)[] = [];
     loadingGraphics.push(
@@ -470,32 +472,15 @@ export class LoadingScene extends SceneBase {
       });
     }
 
-    const intro = this.add
-      .video(0, 0)
-      .setOrigin(0)
-      .setScale(3)
-      .once(Phaser.GameObjects.Events.VIDEO_COMPLETE, (video: Phaser.GameObjects.Video) => {
-        this.tweens.add({
-          targets: intro,
-          duration: 500,
-          alpha: 0,
-          ease: "Sine.easeIn",
-          onComplete: () => video.destroy(),
-        });
-        for (const g of loadingGraphics) {
-          g.setVisible(true);
-        }
-      });
+    const intro = this.add.video(0, 0).setVisible(false);
 
     this.load
       .once(this.LOAD_EVENTS.START, () => {
-        // videos do not need to be preloaded
-        intro.loadURL("images/intro_dark.mp4", true);
-        if (mobile) {
-          intro.video?.setAttribute("webkit-playsinline", "webkit-playsinline");
-          intro.video?.setAttribute("playsinline", "playsinline");
+        // Skip the Pagefault Games video and hide the retro loading screen
+        intro.destroy();
+        for (const g of loadingGraphics) {
+          g.setVisible(false); 
         }
-        intro.play();
       })
       .on(this.LOAD_EVENTS.PROGRESS, (progress: number) => {
         percentText.setText(`${Math.floor(progress * 100)}%`);

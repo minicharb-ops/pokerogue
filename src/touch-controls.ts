@@ -187,10 +187,7 @@ export class TouchControl {
   }
 
   public render(): void {
-    if (!hasTouchscreen() || !settings.general.enableTouchControls) {
-      return;
-    }
-
+    // FORCED OVERRIDE: Bypasses hardware and setting checks to permanently show mobile controls
     document.documentElement.dataset.uiTheme = UiTheme[settings.display.uiTheme];
     document.documentElement.dataset.windowType = enumValueToKey(UiWindowStyle, settings.display.uiWindowStyle);
     const touchControls = document.getElementById("touchControls");

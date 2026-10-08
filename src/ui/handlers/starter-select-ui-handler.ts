@@ -1083,7 +1083,9 @@ export class StarterSelectUiHandler extends MessageUiHandler {
             this.isPartyValid(),
           );
           const isCaught = getStarterData(starterId).dexEntry.caughtAttr;
-          return !isDupe && isValidForChallenge && currentPartyValue + starterCost <= getRunValueLimit() && isCaught;
+          
+          // Cap requirement removed here
+          return !isDupe && isValidForChallenge && isCaught; 
         });
         if (validStarters.length === 0) {
           this.blockInput = false;
@@ -1596,7 +1598,7 @@ export class StarterSelectUiHandler extends MessageUiHandler {
     if (
       !isDupe
       && isValidForChallenge
-      && currentPartyValue + newCost <= getRunValueLimit()
+      // Cap requirement removed here
       && this.partyStarterIds.length < PLAYER_PARTY_MAX_SIZE
     ) {
       options.push({
@@ -3040,7 +3042,10 @@ export class StarterSelectUiHandler extends MessageUiHandler {
     const value = getPartyValue(this.partyStarterIds);
     const newValue = value + add;
     const valueLimit = getRunValueLimit();
-    const overLimit = newValue > valueLimit;
+    
+    // Completely bypass the visual cost cap limit
+    const overLimit = false; 
+
     let newValueStr: string = newValue.toString();
     if (newValueStr.startsWith("0.")) {
       newValueStr = newValueStr.slice(1);
@@ -3087,13 +3092,14 @@ export class StarterSelectUiHandler extends MessageUiHandler {
        * If `speciesStarterDexEntry.caughtAttr` is `true`, this species registered in stater. \
        * We change to can AddParty value to `true` since the user has enough cost to choose this pokemon and this pokemon registered too.
        */
-      const isValidForChallenge = checkStarterValidForChallenge(
+     const isValidForChallenge = checkStarterValidForChallenge(
         starterId,
         this.getStarterDexAttrPropsFromPreferences(starterId),
         isPartyValid,
       );
 
-      const canBeChosen = remainValue >= speciesStarterValue && isValidForChallenge;
+      // Bypasses the point cost math so the grid never locks you out
+      const canBeChosen = isValidForChallenge;
 
       // this will get the value of `isDupe` from `isInParty`.
       // This will let us see if the pokemon in question is in our party already so we don't grey out the sprites if they're invalid

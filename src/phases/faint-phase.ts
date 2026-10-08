@@ -20,6 +20,7 @@ import { PokemonMove } from "#moves/pokemon-move";
 import { PokemonPhase } from "#phases/pokemon-phase";
 import { inSpeedOrder } from "#utils/speed-order-generator";
 import i18next from "i18next";
+import { NemesisTracker } from "../system/nemesis-tracker";
 
 export class FaintPhase extends PokemonPhase {
   public readonly phaseName = "FaintPhase";
@@ -103,6 +104,18 @@ export class FaintPhase extends PokemonPhase {
         pokemon,
         turn: globalScene.currentBattle.turn,
       });
+
+      // --- NEMESIS TRACKER INJECTION START ---
+      // If the fainting pokemon is the player's, and the attacker is a trainer's pokemon
+      if (this.source && !this.source.isPlayer() && (this.source as EnemyPokemon).trainer) {
+        const enemy = this.source as EnemyPokemon;
+        NemesisTracker.recordPlayerFaint(
+          enemy.species.speciesId,
+          enemy.trainer.trainerClassId
+        );
+      }
+      // --- NEMESIS TRACKER INJECTION END ---
+
     } else {
       globalScene.currentBattle.enemyFaints += 1;
       globalScene.currentBattle.enemyFaintsHistory.push({

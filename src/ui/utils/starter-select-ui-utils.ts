@@ -285,6 +285,20 @@ export function getStarterData(
   dexEntry.ribbons = new RibbonData(originalDexEntry.ribbons.getRibbons());
   const starterDataEntry: StarterDataEntry = deepCopy(globalScene.gameData.starterData[starterId]);
 
+  // --- GEN 1 & 2 UNLOCK FIX ---
+  const species = speciesDataRegistry.getSpecies(starterId);
+  const isGen1or2 = species.generation === 1 || species.generation === 2;
+  const isLegendary = species.legendary || species.subLegendary || species.mythical;
+  const isHitmon = starterId === 106 || starterId === 107; 
+  const hasPrevolution = speciesDataRegistry.hasPrevolution(starterId);
+
+  if (isGen1or2 && !isLegendary && (!hasPrevolution || isHitmon)) {
+    dexEntry.caughtAttr = 1n; 
+    if (dexEntry.ivs.every(iv => iv === 0)) {
+      dexEntry.ivs = [10, 10, 10, 10, 10, 10]; 
+    }
+  }
+
   if (applyChallenge) {
     applyChallenges(ChallengeType.STARTER_SELECT_MODIFY, starterId, dexEntry, starterDataEntry);
   }

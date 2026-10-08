@@ -73,7 +73,8 @@ export class TitleUiHandler extends OptionSelectUiHandler {
 
     const logo = globalScene.add
       .image(width / 2, 8, this.getLogo()) // formatting
-      .setOrigin(0.5, 0);
+      .setOrigin(0.5, 0)
+      .setVisible(false); // Hides the title logo
 
     if (timedEventManager.isEventActive()) {
       this.eventDisplay = new TimedEventDisplay(0, 0, timedEventManager.activeEvent());
@@ -85,18 +86,21 @@ export class TitleUiHandler extends OptionSelectUiHandler {
     const labelPosX = width - 2;
     // Actual y positions will be determined after the title menu has been populated with options
     this.usernameLabel = addTextObject(labelPosX, 0, this.getUsername(), TextStyle.MESSAGE, { fontSize: "54px" }) // formatting
-      .setOrigin(1, 0);
+      .setOrigin(1, 0)
+      .setVisible(false); // Hides "Logged in as: Guest"
 
     this.playerCountLabel = addTextObject(labelPosX, 0, `? ${i18next.t("menu:playersOnline")}`, TextStyle.MESSAGE, {
       fontSize: "54px",
     }) //
-      .setOrigin(1, 0);
+      .setOrigin(1, 0)
+      .setVisible(false); // Hides "? Players Online"
 
     const logoHeight = logo.y + logo.displayHeight;
 
     this.splashMessageText = addTextObject(logo.x + 64, logoHeight - 8, "", TextStyle.MONEY, { fontSize: "54px" })
       .setOrigin()
-      .setAngle(-20);
+      .setAngle(-20)
+      .setVisible(false); // Hides the bouncing splash text
 
     globalScene.tweens.add({
       targets: this.splashMessageText,
@@ -107,7 +111,8 @@ export class TitleUiHandler extends OptionSelectUiHandler {
     });
 
     this.appVersionText = addTextObject(logo.x - 60, logoHeight + 4, "", TextStyle.MONEY, { fontSize: "54px" }) // formatting
-      .setOrigin();
+      .setOrigin()
+      .setVisible(false); // Hides the beta version text
 
     this.titleContainer.add([
       logo,
